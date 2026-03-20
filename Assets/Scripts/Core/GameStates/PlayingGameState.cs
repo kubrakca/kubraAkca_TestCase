@@ -1,3 +1,4 @@
+using UI;
 using UnityEngine;
 
 namespace Core.GameStates
@@ -6,6 +7,7 @@ namespace Core.GameStates
     {
         public override void Enter()
         {
+            UIService.Show<GameScreen>();
             base.Enter();
             Debug.Log("Playing Game State");
             

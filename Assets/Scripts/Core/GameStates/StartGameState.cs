@@ -5,24 +5,33 @@ namespace Core.GameStates
 {
     public class StartGameState : GameState
     {
+        private StartScreen _startScreen;
+
         public override void Enter()
         {
             base.Enter();
-            Debug.Log("Start Game State");
-            UIService.Show<StartScreen>();
+            
+            _startScreen = UIService.Show<StartScreen>();
 
+            if (_startScreen != null)
+            {
+                _startScreen.OnPlayRequested += HandlePlayRequested;
+            }
+        }
+
+        private void HandlePlayRequested()
+        {
+            Context.ChangeState<PlayingGameState>();
         }
 
         public override void Exit()
         {
-            base.Exit();
-            Debug.Log("Exit Game State");
-            ToNextState();
-        }
+            if (_startScreen != null)
+            {
+                _startScreen.OnPlayRequested -= HandlePlayRequested;
+            }
 
-        private void ToNextState()
-        {
-            Context.ChangeState<PlayingGameState>();
+            base.Exit();
         }
     }
 }
