@@ -10,10 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 30b59a23a77a34a63841f747810ffabd, type: 3}
-  m_Name: NewLevel
+  m_Name: Level1
   m_EditorClassIdentifier: 
   levelNumber: 0
   timeLimit: 60
-  stars: []
-  gates: []
-  obstacles: []
+  stars:
+  - position: {x: 0, y: 0}
+    color: 3
+  - position: {x: 0, y: 0}
+    color: 3
+  - position: {x: 0, y: 0}
+    color: 3
+  gates:
+  - position: {x: 0, y: 0}
+    color: 1
+    exitDirection: {x: 0, y: 0}
+  obstacles:
+  - position: {x: 0, y: 0}
+    scale: {x: 1, y: 1}
