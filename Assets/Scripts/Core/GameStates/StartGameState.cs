@@ -1,3 +1,4 @@
+using UI;
 using UnityEngine;
 
 namespace Core.GameStates
@@ -8,6 +9,7 @@ namespace Core.GameStates
         {
             base.Enter();
             Debug.Log("Start Game State");
+            UIService.Show<StartScreen>();
 
         }
 
