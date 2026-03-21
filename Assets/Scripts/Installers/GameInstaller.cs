@@ -7,7 +7,6 @@ namespace Installers
     {
         [SerializeField] private GameObject gameStateRootPrefab;
 
-        // ReSharper disable Unity.PerformanceAnalysis
         public override void InstallBindings()
         {
             Container.InstantiatePrefab(gameStateRootPrefab);

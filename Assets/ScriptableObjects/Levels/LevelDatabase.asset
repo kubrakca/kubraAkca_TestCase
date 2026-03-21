@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ee3e824cf2e5466fbc0be7345d433f8, type: 3}
+  m_Name: LevelDatabase
+  m_EditorClassIdentifier: 
+  levels:
+  - {fileID: 11400000, guid: 1d87735fe0ea448f49812aa94b182052, type: 2}
+  starPrefab: {fileID: 4979147238386652257, guid: 6ff4ce69547bb44488292b7bc5d28029, type: 3}
+  gatePrefab: {fileID: 5886543050926561250, guid: f9f4b1d893864428cbf0b526dc59c633, type: 3}
+  obstaclePrefab: {fileID: 6288632315754521945, guid: 05def224e483a4f64b83857bc9ef166d, type: 3}

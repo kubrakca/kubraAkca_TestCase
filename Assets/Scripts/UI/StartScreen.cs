@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using Enums;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Pool; // Yeni pooling kütüphanesi
+using UnityEngine.Pool;
+using Zenject;
 
 namespace UI
 {
@@ -12,7 +13,9 @@ namespace UI
         [Header("References")]
         [SerializeField] private LevelButtonView buttonPrefab;
         [SerializeField] private Transform buttonContainer;
-        [SerializeField] private Button startButton; 
+        [SerializeField] private Button startButton;
+
+        [Inject] private ILevelService _levelService;
 
         public event Action<int> OnLevelSelected;
         public event Action OnPlayRequested;
@@ -28,7 +31,7 @@ namespace UI
                 actionOnRelease: (btn) => btn.gameObject.SetActive(false),
                 actionOnDestroy: (btn) => Destroy(btn.gameObject),
                 defaultCapacity: 5,
-                maxSize: 10
+                maxSize: 20
             );
 
             if (startButton != null)
@@ -40,7 +43,6 @@ namespace UI
         public override void Show()
         {
             base.Show();
-            Debug.Log("Start Screen Show");
             RefreshLevelButtons();
         }
 
@@ -48,38 +50,38 @@ namespace UI
         {
             base.Hide();
             ClearButtons();
-            Debug.Log("Start Screen Hide");
         }
 
         private void RefreshLevelButtons()
         {
             ClearButtons();
 
-            for (int i = 1; i <= 5; i++)
+            for (int i = 0; i < _levelService.LevelCount; i++)
             {
-                LevelStatus status = i < 3 ? LevelStatus.Completed : (i == 3 ? LevelStatus.Active : LevelStatus.Locked);
-                
+                LevelStatus status = _levelService.GetLevelStatus(i);
+
                 var btn = _pool.Get();
                 btn.transform.SetParent(buttonContainer, false);
-                btn.Setup(i, status);
-
+                btn.Setup(i + 1, i, status);
                 btn.OnLevelSelected += HandleLevelSelected;
-                
+
                 _activeButtons.Add(btn);
             }
         }
 
-        private void HandleLevelSelected(int levelIndex)
+        private void HandleLevelSelected(int dataIndex)
         {
-            Debug.Log($"Level {levelIndex} seçildi!");
-            OnLevelSelected?.Invoke(levelIndex);
+            LevelStatus status = _levelService.GetLevelStatus(dataIndex);
+            if (status == LevelStatus.Locked) return;
+
+            OnLevelSelected?.Invoke(dataIndex);
         }
 
         private void ClearButtons()
         {
             foreach (var btn in _activeButtons)
             {
-                btn.OnLevelSelected -= HandleLevelSelected; 
+                btn.OnLevelSelected -= HandleLevelSelected;
                 _pool.Release(btn);
             }
             _activeButtons.Clear();

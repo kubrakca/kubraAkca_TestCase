@@ -12,19 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30b59a23a77a34a63841f747810ffabd, type: 3}
   m_Name: Level1
   m_EditorClassIdentifier: 
-  levelNumber: 0
-  timeLimit: 60
+  levelNumber: 1
+  timeLimit: 45
+  gridSize: {x: 6, y: 6}
   stars:
-  - position: {x: 0, y: 0}
-    color: 3
-  - position: {x: 0, y: 0}
-    color: 3
-  - position: {x: 0, y: 0}
-    color: 3
-  gates:
-  - position: {x: 0, y: 0}
+  - gridPosition: {x: -2, y: -1}
     color: 1
-    exitDirection: {x: 0, y: 0}
+  - gridPosition: {x: 1, y: 2}
+    color: 1
+  - gridPosition: {x: -1, y: 1}
+    color: 2
+  gates:
+  - gridPosition: {x: 3, y: 0}
+    color: 1
+    exitDirection: {x: 1, y: 0}
+  - gridPosition: {x: -3, y: 1}
+    color: 2
+    exitDirection: {x: -1, y: 0}
   obstacles:
-  - position: {x: 0, y: 0}
-    scale: {x: 1, y: 1}
+  - gridPosition: {x: 0, y: 0}
+    size: {x: 1, y: 1}
+  - gridPosition: {x: 1, y: -1}
+    size: {x: 1, y: 1}

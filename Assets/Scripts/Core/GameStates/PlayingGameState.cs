@@ -1,27 +1,66 @@
+using Core;
 using UI;
 using UnityEngine;
+using Zenject;
 
 namespace Core.GameStates
 {
     public class PlayingGameState : GameState
     {
+        [Inject] private ILevelService _levelService;
+        [Inject] private LevelSpawner _levelSpawner;
+
+        private GameScreen _gameScreen;
+
         public override void Enter()
         {
-            UIService.Show<GameScreen>();
             base.Enter();
-            Debug.Log("Playing Game State");
-            
+
+            var levelData = _levelService.GetLevelData(Context.SelectedLevelIndex);
+
+            if (levelData == null)
+            {
+                Debug.LogError($"LevelData not found for index {Context.SelectedLevelIndex}");
+                Context.ChangeState<StartGameState>();
+                return;
+            }
+
+            _gameScreen = UIService.Show<GameScreen>();
+            _gameScreen.Initialize(levelData);
+            _gameScreen.OnTimerExpired += HandleTimerExpired;
+
+            _levelSpawner.SpawnLevel(levelData);
+            _levelSpawner.OnAllStarsCollected += HandleLevelCompleted;
+
+            Debug.Log($"Playing Level {levelData.levelNumber}");
+        }
+
+        private void HandleLevelCompleted()
+        {
+            _levelService.CompleteLevel(Context.SelectedLevelIndex);
+            Debug.Log("Level Completed!");
+            Context.ChangeState<EndGameState>();
+        }
+
+        private void HandleTimerExpired()
+        {
+            Debug.Log("Level Failed - Time's up!");
+            Context.ChangeState<EndGameState>();
         }
 
         public override void Exit()
         {
+            if (_gameScreen != null)
+            {
+                _gameScreen.OnTimerExpired -= HandleTimerExpired;
+                _gameScreen.StopTimer();
+            }
+
+            _levelSpawner.OnAllStarsCollected -= HandleLevelCompleted;
+            _levelSpawner.ClearLevel();
+
+            UIService.Hide<GameScreen>();
             base.Exit();
-            Debug.Log("Exit Game State");
-            ToNextState();
-        }
-        private void ToNextState()
-        {
-            Context.ChangeState<EndGameState>();
         }
     }
 }

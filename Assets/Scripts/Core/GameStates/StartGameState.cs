@@ -10,13 +10,20 @@ namespace Core.GameStates
         public override void Enter()
         {
             base.Enter();
-            
+
             _startScreen = UIService.Show<StartScreen>();
 
             if (_startScreen != null)
             {
+                _startScreen.OnLevelSelected += HandleLevelSelected;
                 _startScreen.OnPlayRequested += HandlePlayRequested;
             }
+        }
+
+        private void HandleLevelSelected(int levelIndex)
+        {
+            Context.SelectedLevelIndex = levelIndex;
+            Debug.Log($"Level {levelIndex} selected");
         }
 
         private void HandlePlayRequested()
@@ -28,9 +35,11 @@ namespace Core.GameStates
         {
             if (_startScreen != null)
             {
+                _startScreen.OnLevelSelected -= HandleLevelSelected;
                 _startScreen.OnPlayRequested -= HandlePlayRequested;
             }
 
+            UIService.Hide<StartScreen>();
             base.Exit();
         }
     }

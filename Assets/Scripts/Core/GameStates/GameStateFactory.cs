@@ -11,6 +11,8 @@ namespace Core.GameStates
         private Dictionary<Type, GameState> _stateDict;
         private GameState _currentState;
 
+        public int SelectedLevelIndex { get; set; }
+
         private void Awake()
         {
             _stateDict = new Dictionary<Type, GameState>();

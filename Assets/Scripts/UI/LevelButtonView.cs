@@ -14,37 +14,39 @@ namespace UI
         [SerializeField] private Color disabledColor;
         [SerializeField] private Color lockedColor;
         [SerializeField] private Color disableTextColor;
-        
-        public event Action<int> OnLevelSelected;
-        private int _levelIndex;
 
-        public void Setup(int index, LevelStatus status)
+        public event Action<int> OnLevelSelected;
+        private int _dataIndex;
+
+        public void Setup(int displayNumber, int dataIndex, LevelStatus status)
         {
-            _levelIndex = index;
-            levelText.text = index.ToString();
-            
+            _dataIndex = dataIndex;
+            levelText.text = displayNumber.ToString();
+
+            button.interactable = status != LevelStatus.Locked;
+
             switch (status)
             {
                 case LevelStatus.Locked:
                     backgroundImage.color = lockedColor;
                     transform.localScale = Vector3.one;
                     break;
-                    
+
                 case LevelStatus.Active:
                     backgroundImage.color = Color.white;
-                    transform.localScale = Vector3.one * 1.3f; 
+                    transform.localScale = Vector3.one * 1.3f;
                     break;
-                    
+
                 case LevelStatus.Completed:
                     backgroundImage.color = disabledColor;
                     transform.localScale = Vector3.one;
                     break;
             }
         }
-        
+
         private void Awake()
         {
-            button.onClick.AddListener(() => OnLevelSelected?.Invoke(_levelIndex));
+            button.onClick.AddListener(() => OnLevelSelected?.Invoke(_dataIndex));
         }
     }
 }
