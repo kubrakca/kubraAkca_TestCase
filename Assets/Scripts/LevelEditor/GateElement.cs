@@ -3,5 +3,15 @@ using UnityEngine;
 
 namespace LevelEditor
 {
-    public class GateElement : MonoBehaviour { public ColorType color; public Vector2 exitDir; }
+    public class GateElement : MonoBehaviour
+    {
+        [SerializeField] private SpriteRenderer spriteRenderer;
+        public ColorType color;
+        public Vector2 exitDir;
+
+        public void ApplyColor()
+        {
+            spriteRenderer.color = color.ToColor();
+        }
+    }
 }

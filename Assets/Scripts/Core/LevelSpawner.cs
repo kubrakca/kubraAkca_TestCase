@@ -32,6 +32,7 @@ namespace Core
                     var star = Instantiate(_levelDatabase.starPrefab, _gridRoot);
                     star.transform.position = new Vector3(starData.gridPosition.x, starData.gridPosition.y, 0);
                     star.color = starData.color;
+                    star.ApplyColor();
                     _activeStars.Add(star);
                 }
             }
@@ -44,6 +45,7 @@ namespace Core
                     gate.transform.position = new Vector3(gateData.gridPosition.x, gateData.gridPosition.y, 0);
                     gate.color = gateData.color;
                     gate.exitDir = gateData.exitDirection;
+                    gate.ApplyColor();
                     _activeGates.Add(gate);
                 }
             }
@@ -55,6 +57,7 @@ namespace Core
                     var obstacle = Instantiate(_levelDatabase.obstaclePrefab, _gridRoot);
                     obstacle.transform.position = new Vector3(obstacleData.gridPosition.x, obstacleData.gridPosition.y, 0);
                     obstacle.transform.localScale = new Vector3(obstacleData.size.x, obstacleData.size.y, 1);
+                    obstacle.ApplyColor();
                     _activeObstacles.Add(obstacle);
                 }
             }

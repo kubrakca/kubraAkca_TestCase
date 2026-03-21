@@ -22,6 +22,7 @@ namespace UI
 
         private IObjectPool<LevelButtonView> _pool;
         private readonly List<LevelButtonView> _activeButtons = new();
+        private int _selectedLevelIndex = -1;
 
         private void Awake()
         {
@@ -36,13 +37,14 @@ namespace UI
 
             if (startButton != null)
             {
-                startButton.onClick.AddListener(() => OnPlayRequested?.Invoke());
+                startButton.onClick.AddListener(HandlePlayButton);
             }
         }
 
         public override void Show()
         {
             base.Show();
+            _selectedLevelIndex = _levelService.CurrentLevelIndex;
             RefreshLevelButtons();
         }
 
@@ -63,6 +65,7 @@ namespace UI
                 var btn = _pool.Get();
                 btn.transform.SetParent(buttonContainer, false);
                 btn.Setup(i + 1, i, status);
+                btn.SetSelected(i == _selectedLevelIndex);
                 btn.OnLevelSelected += HandleLevelSelected;
 
                 _activeButtons.Add(btn);
@@ -74,7 +77,24 @@ namespace UI
             LevelStatus status = _levelService.GetLevelStatus(dataIndex);
             if (status == LevelStatus.Locked) return;
 
+            _selectedLevelIndex = dataIndex;
+
+            for (int i = 0; i < _activeButtons.Count; i++)
+            {
+                _activeButtons[i].SetSelected(i == dataIndex);
+            }
+
             OnLevelSelected?.Invoke(dataIndex);
+        }
+
+        private void HandlePlayButton()
+        {
+            if (_selectedLevelIndex < 0 || _selectedLevelIndex >= _levelService.LevelCount) return;
+
+            LevelStatus status = _levelService.GetLevelStatus(_selectedLevelIndex);
+            if (status == LevelStatus.Locked) return;
+
+            OnPlayRequested?.Invoke();
         }
 
         private void ClearButtons()
