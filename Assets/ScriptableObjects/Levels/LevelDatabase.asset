@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levels:
   - {fileID: 11400000, guid: 1d87735fe0ea448f49812aa94b182052, type: 2}
+  - {fileID: 11400000, guid: 72a850fa72e5b4e23b534662cce38b75, type: 2}
+  - {fileID: 11400000, guid: c633cac02fa73497f88516de31cb76f5, type: 2}
+  - {fileID: 11400000, guid: e14e146968f7a4ca3b8edaf6efe085c7, type: 2}
+  - {fileID: 11400000, guid: 10ed3cdcffe9a451d8db59ebdd113b5a, type: 2}
   starPrefab: {fileID: 4979147238386652257, guid: 6ff4ce69547bb44488292b7bc5d28029, type: 3}
   gatePrefab: {fileID: 5886543050926561250, guid: f9f4b1d893864428cbf0b526dc59c633, type: 3}
   obstaclePrefab: {fileID: 6288632315754521945, guid: 05def224e483a4f64b83857bc9ef166d, type: 3}

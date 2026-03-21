@@ -1,15 +1,19 @@
 using UI;
 using UnityEngine;
+using Zenject;
 
 namespace Core.GameStates
 {
     public class StartGameState : GameState
     {
+        [Inject] private ILevelService _levelService;
         private StartScreen _startScreen;
 
         public override void Enter()
         {
             base.Enter();
+
+            Context.SelectedLevelIndex = _levelService.CurrentLevelIndex;
 
             _startScreen = UIService.Show<StartScreen>();
 

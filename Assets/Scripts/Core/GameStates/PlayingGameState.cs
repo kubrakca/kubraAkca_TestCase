@@ -9,6 +9,7 @@ namespace Core.GameStates
     {
         [Inject] private ILevelService _levelService;
         [Inject] private LevelSpawner _levelSpawner;
+        [Inject] private GameplayController _gameplayController;
 
         private GameScreen _gameScreen;
 
@@ -30,7 +31,9 @@ namespace Core.GameStates
             _gameScreen.OnTimerExpired += HandleTimerExpired;
 
             _levelSpawner.SpawnLevel(levelData);
-            _levelSpawner.OnAllStarsCollected += HandleLevelCompleted;
+
+            _gameplayController.Initialize(levelData);
+            _gameplayController.OnAllStarsMatched += HandleLevelCompleted;
 
             Debug.Log($"Playing Level {levelData.levelNumber}");
         }
@@ -56,9 +59,10 @@ namespace Core.GameStates
                 _gameScreen.StopTimer();
             }
 
-            _levelSpawner.OnAllStarsCollected -= HandleLevelCompleted;
-            _levelSpawner.ClearLevel();
+            _gameplayController.OnAllStarsMatched -= HandleLevelCompleted;
+            _gameplayController.Deactivate();
 
+            _levelSpawner.ClearLevel();
             UIService.Hide<GameScreen>();
             base.Exit();
         }

@@ -31,7 +31,17 @@ namespace Core
 
             _gridRoot = new GameObject($"Level_{data.levelNumber}_Grid").transform;
 
-            _gridVisualizer.GenerateGrid(data.gridSize, _gridRoot);
+            int halfW = data.gridSize.x / 2;
+            int halfH = data.gridSize.y / 2;
+            var gridMin = new Vector2Int(-halfW, -halfH);
+            var gridMax = new Vector2Int(halfW - 1, halfH - 1);
+            _gridVisualizer.GenerateGrid(gridMin, gridMax, _gridRoot);
+
+            float centerX = (gridMin.x + gridMax.x) / 2f;
+            float centerY = (gridMin.y + gridMax.y) / 2f;
+            var cam = Camera.main;
+            if (cam != null)
+                cam.transform.position = new Vector3(centerX, centerY, cam.transform.position.z);
 
             if (data.stars != null)
             {

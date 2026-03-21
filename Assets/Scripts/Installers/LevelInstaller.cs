@@ -23,6 +23,11 @@ namespace Installers
                 .FromNewComponentOnNewGameObject()
                 .AsSingle()
                 .NonLazy();
+
+            Container.Bind<GameplayController>()
+                .FromNewComponentOnNewGameObject()
+                .AsSingle()
+                .NonLazy();
         }
     }
 }

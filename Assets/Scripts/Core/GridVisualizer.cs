@@ -9,73 +9,81 @@ namespace Core
         [SerializeField] private Color borderColor = new Color(0.4f, 0.4f, 0.6f, 0.8f);
         [SerializeField] private float lineThickness = 0.03f;
         [SerializeField] private float borderThickness = 0.08f;
-        [SerializeField] private float cellPadding = 0.02f;
 
-        public void GenerateGrid(Vector2Int gridSize, Transform parent)
+        public void GenerateGrid(Vector2Int gridMin, Vector2Int gridMax, Transform parent)
         {
-            float width = gridSize.x;
-            float height = gridSize.y;
-            float halfW = width / 2f;
-            float halfH = height / 2f;
+            float left = gridMin.x - 0.5f;
+            float right = gridMax.x + 0.5f;
+            float bottom = gridMin.y - 0.5f;
+            float top = gridMax.y + 0.5f;
 
-            CreateBackground(halfW, halfH, width, height, parent);
-            CreateGridLines(gridSize, halfW, halfH, width, height, parent);
-            CreateBorder(halfW, halfH, width, height, parent);
+            float width = right - left;
+            float height = top - bottom;
+            float centerX = (left + right) / 2f;
+            float centerY = (bottom + top) / 2f;
+
+            CreateBackground(centerX, centerY, width, height, parent);
+            CreateGridLines(gridMin, gridMax, left, right, bottom, top, centerX, centerY, width, height, parent);
+            CreateBorder(centerX, centerY, width, height, parent);
         }
 
-        private void CreateBackground(float halfW, float halfH, float width, float height, Transform parent)
+        private void CreateBackground(float cx, float cy, float w, float h, Transform parent)
         {
             var bg = CreateSprite("GridBackground", parent);
-            bg.transform.localPosition = new Vector3(0, 0, 0.1f);
-            bg.transform.localScale = new Vector3(width + 0.2f, height + 0.2f, 1);
+            bg.transform.localPosition = new Vector3(cx, cy, 0.1f);
+            bg.transform.localScale = new Vector3(w, h, 1);
             bg.color = backgroundColor;
             bg.sortingOrder = -10;
         }
 
-        private void CreateGridLines(Vector2Int gridSize, float halfW, float halfH, float width, float height, Transform parent)
+        private void CreateGridLines(Vector2Int gridMin, Vector2Int gridMax,
+            float left, float right, float bottom, float top,
+            float cx, float cy, float w, float h, Transform parent)
         {
-            for (int x = 1; x < gridSize.x; x++)
+            for (int x = gridMin.x; x <= gridMax.x; x++)
             {
+                float lineX = x + 0.5f;
                 var line = CreateSprite($"VLine_{x}", parent);
-                line.transform.localPosition = new Vector3(-halfW + x, 0, 0.05f);
-                line.transform.localScale = new Vector3(lineThickness, height, 1);
+                line.transform.localPosition = new Vector3(lineX, cy, 0.05f);
+                line.transform.localScale = new Vector3(lineThickness, h, 1);
                 line.color = lineColor;
                 line.sortingOrder = -9;
             }
 
-            for (int y = 1; y < gridSize.y; y++)
+            for (int y = gridMin.y; y <= gridMax.y; y++)
             {
+                float lineY = y + 0.5f;
                 var line = CreateSprite($"HLine_{y}", parent);
-                line.transform.localPosition = new Vector3(0, -halfH + y, 0.05f);
-                line.transform.localScale = new Vector3(width, lineThickness, 1);
+                line.transform.localPosition = new Vector3(cx, lineY, 0.05f);
+                line.transform.localScale = new Vector3(w, lineThickness, 1);
                 line.color = lineColor;
                 line.sortingOrder = -9;
             }
         }
 
-        private void CreateBorder(float halfW, float halfH, float width, float height, Transform parent)
+        private void CreateBorder(float cx, float cy, float w, float h, Transform parent)
         {
             var top = CreateSprite("BorderTop", parent);
-            top.transform.localPosition = new Vector3(0, halfH, 0.02f);
-            top.transform.localScale = new Vector3(width + borderThickness * 2, borderThickness, 1);
+            top.transform.localPosition = new Vector3(cx, cy + h / 2f, 0.02f);
+            top.transform.localScale = new Vector3(w + borderThickness * 2, borderThickness, 1);
             top.color = borderColor;
             top.sortingOrder = -8;
 
             var bottom = CreateSprite("BorderBottom", parent);
-            bottom.transform.localPosition = new Vector3(0, -halfH, 0.02f);
-            bottom.transform.localScale = new Vector3(width + borderThickness * 2, borderThickness, 1);
+            bottom.transform.localPosition = new Vector3(cx, cy - h / 2f, 0.02f);
+            bottom.transform.localScale = new Vector3(w + borderThickness * 2, borderThickness, 1);
             bottom.color = borderColor;
             bottom.sortingOrder = -8;
 
             var left = CreateSprite("BorderLeft", parent);
-            left.transform.localPosition = new Vector3(-halfW, 0, 0.02f);
-            left.transform.localScale = new Vector3(borderThickness, height + borderThickness * 2, 1);
+            left.transform.localPosition = new Vector3(cx - w / 2f, cy, 0.02f);
+            left.transform.localScale = new Vector3(borderThickness, h + borderThickness * 2, 1);
             left.color = borderColor;
             left.sortingOrder = -8;
 
             var right = CreateSprite("BorderRight", parent);
-            right.transform.localPosition = new Vector3(halfW, 0, 0.02f);
-            right.transform.localScale = new Vector3(borderThickness, height + borderThickness * 2, 1);
+            right.transform.localPosition = new Vector3(cx + w / 2f, cy, 0.02f);
+            right.transform.localScale = new Vector3(borderThickness, h + borderThickness * 2, 1);
             right.color = borderColor;
             right.sortingOrder = -8;
         }
