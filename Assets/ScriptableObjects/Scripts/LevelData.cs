@@ -10,6 +10,9 @@ namespace ScriptableObjects
         public int levelNumber;
         public float timeLimit = 60f;
         
+        [Header("Grid Settings")]
+        public Vector2Int gridSize = new Vector2Int(3, 3);
+        
         [Header("Level Layout")]
         public List<StarData> stars;
         public List<GateData> gates;
