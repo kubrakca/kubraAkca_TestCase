@@ -15,15 +15,23 @@ namespace Core
         public event Action OnAllStarsCollected;
 
         private Transform _gridRoot;
+        private GridVisualizer _gridVisualizer;
         private readonly List<StarElement> _activeStars = new();
         private readonly List<GateElement> _activeGates = new();
         private readonly List<ObstacleElement> _activeObstacles = new();
+
+        private void Awake()
+        {
+            _gridVisualizer = gameObject.AddComponent<GridVisualizer>();
+        }
 
         public void SpawnLevel(LevelData data)
         {
             ClearLevel();
 
             _gridRoot = new GameObject($"Level_{data.levelNumber}_Grid").transform;
+
+            _gridVisualizer.GenerateGrid(data.gridSize, _gridRoot);
 
             if (data.stars != null)
             {
