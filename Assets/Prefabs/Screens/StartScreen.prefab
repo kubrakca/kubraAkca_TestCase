@@ -63,6 +63,9 @@ MonoBehaviour:
   buttonPrefab: {fileID: 6410301030451023969, guid: 1a654e15159d74a14a07dea9b6d0cc42, type: 3}
   buttonContainer: {fileID: 6242775016244878347}
   startButton: {fileID: 3382598135817372620}
+  playButtonScaleTarget: 1.1
+  playButtonScaleDuration: 1
+  playButtonEase: 4
 --- !u!1 &2395017041795585029
 GameObject:
   m_ObjectHideFlags: 0

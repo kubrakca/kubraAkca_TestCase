@@ -14,7 +14,16 @@ namespace UI
         [SerializeField] private TMP_Text timerText;
         [SerializeField] private TMP_Text levelIndicatorText;
         [SerializeField] private Button pauseButton;
+
+        [Header("Timer Urgent Animation")]
         [SerializeField] private Color urgentTimerColor = Color.red;
+        [SerializeField] private float urgentThreshold = 15f;
+        [SerializeField] private float urgentColorDuration = 0.3f;
+        [SerializeField] private float urgentScaleUp = 1.4f;
+        [SerializeField] private float urgentScaleUpDuration = 0.2f;
+        [SerializeField] private Ease urgentScaleUpEase = Ease.OutBack;
+        [SerializeField] private float urgentScaleDownDuration = 0.2f;
+        [SerializeField] private Ease urgentScaleDownEase = Ease.InBack;
 
         public event Action OnTimerExpired;
         public event Action OnPauseClicked;
@@ -53,7 +62,7 @@ namespace UI
                 _remainingTime -= Time.deltaTime;
                 UpdateTimerDisplay();
 
-                if (!_isUrgent && _remainingTime <= 15f)
+                if (!_isUrgent && _remainingTime <= urgentThreshold)
                 {
                     _isUrgent = true;
                     PlayUrgentAnimation();
@@ -73,12 +82,12 @@ namespace UI
 
         private void PlayUrgentAnimation()
         {
-            timerText.DOColor(urgentTimerColor, 0.3f);
+            timerText.DOColor(urgentTimerColor, urgentColorDuration);
             timerText.transform
-                .DOScale(1.4f, 0.2f)
-                .SetEase(Ease.OutBack)
+                .DOScale(urgentScaleUp, urgentScaleUpDuration)
+                .SetEase(urgentScaleUpEase)
                 .OnComplete(() =>
-                    timerText.transform.DOScale(1f, 0.2f).SetEase(Ease.InBack));
+                    timerText.transform.DOScale(1f, urgentScaleDownDuration).SetEase(urgentScaleDownEase));
         }
 
         private void UpdateTimerDisplay()

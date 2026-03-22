@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using Enums;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +16,11 @@ namespace UI
         [SerializeField] private Transform buttonContainer;
         [SerializeField] private Button startButton;
 
+        [Header("Play Button Animation")]
+        [SerializeField] private float playButtonScaleTarget = 1.1f;
+        [SerializeField] private float playButtonScaleDuration = 0.6f;
+        [SerializeField] private Ease playButtonEase = Ease.InOutSine;
+
         [Inject] private ILevelService _levelService;
 
         public event Action<int> OnLevelSelected;
@@ -23,6 +29,7 @@ namespace UI
         private IObjectPool<LevelButtonView> _pool;
         private readonly List<LevelButtonView> _activeButtons = new();
         private int _selectedLevelIndex = -1;
+        private Tween _playButtonTween;
 
         private void Awake()
         {
@@ -46,12 +53,32 @@ namespace UI
             base.Show();
             _selectedLevelIndex = _levelService.CurrentLevelIndex;
             RefreshLevelButtons();
+            StartPlayButtonAnimation();
         }
 
         public override void Hide()
         {
+            KillPlayButtonAnimation();
             base.Hide();
             ClearButtons();
+        }
+
+        private void StartPlayButtonAnimation()
+        {
+            if (startButton == null) return;
+            startButton.transform.localScale = Vector3.one;
+            _playButtonTween = startButton.transform
+                .DOScale(playButtonScaleTarget, playButtonScaleDuration)
+                .SetEase(playButtonEase)
+                .SetLoops(-1, LoopType.Yoyo);
+        }
+
+        private void KillPlayButtonAnimation()
+        {
+            _playButtonTween?.Kill();
+            _playButtonTween = null;
+            if (startButton != null)
+                startButton.transform.localScale = Vector3.one;
         }
 
         private void RefreshLevelButtons()
