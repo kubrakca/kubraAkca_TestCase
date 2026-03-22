@@ -12,21 +12,61 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30b59a23a77a34a63841f747810ffabd, type: 3}
   m_Name: Level2
   m_EditorClassIdentifier: 
-  levelNumber: 1
-  timeLimit: 45
-  gridSize: {x: 9, y: 9}
+  levelNumber: 2
+  timeLimit: 60
+  gridSize: {x: 4, y: 4}
   stars:
-  - gridPosition: {x: -2, y: -1}
+  - gridPosition: {x: 0, y: 3}
     color: 1
-  gates:
-  - gridPosition: {x: 6, y: 0}
-    color: 1
-    exitDirection: {x: 1, y: 0}
-  - gridPosition: {x: -3, y: 1}
+  - gridPosition: {x: 1, y: 3}
     color: 2
-    exitDirection: {x: -1, y: 0}
+  - gridPosition: {x: 3, y: 3}
+    color: 4
+  - gridPosition: {x: 3, y: 2}
+    color: 4
+  - gridPosition: {x: 3, y: 1}
+    color: 2
+  - gridPosition: {x: 0, y: 2}
+    color: 4
+  - gridPosition: {x: 0, y: 1}
+    color: 1
+  - gridPosition: {x: 1, y: 2}
+    color: 2
+  - gridPosition: {x: 1, y: 0}
+    color: 1
+  - gridPosition: {x: 2, y: 2}
+    color: 3
+  - gridPosition: {x: 2, y: 1}
+    color: 1
+  - gridPosition: {x: 2, y: 0}
+    color: 3
+  gates:
+  - gridPosition: {x: 3, y: 3.5}
+    color: 4
+    size: {x: 0, y: 0}
+    orientation: 0
+  - gridPosition: {x: 3.5, y: 2}
+    color: 3
+    size: {x: 0, y: 0}
+    orientation: 1
+  - gridPosition: {x: 3.5, y: 1}
+    color: 3
+    size: {x: 0, y: 0}
+    orientation: 1
+  - gridPosition: {x: -0.5, y: 1}
+    color: 2
+    size: {x: 0, y: 0}
+    orientation: 1
+  - gridPosition: {x: 2, y: -0.5}
+    color: 1
+    size: {x: 0, y: 0}
+    orientation: 0
   obstacles:
+  - gridPosition: {x: 2, y: 3}
+    size: {x: 1, y: 1}
+  - gridPosition: {x: 3, y: 0}
+    size: {x: 1, y: 1}
   - gridPosition: {x: 0, y: 0}
     size: {x: 1, y: 1}
-  - gridPosition: {x: 1, y: -1}
+  - gridPosition: {x: 1, y: 1}
     size: {x: 1, y: 1}
