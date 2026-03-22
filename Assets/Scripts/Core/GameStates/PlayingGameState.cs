@@ -1,4 +1,3 @@
-using Core;
 using UI;
 using UnityEngine;
 using Zenject;
@@ -12,6 +11,7 @@ namespace Core.GameStates
         [Inject] private GameplayController _gameplayController;
 
         private GameScreen _gameScreen;
+        private SettingsScreen _settingsScreen;
 
         public override void Enter()
         {
@@ -29,6 +29,7 @@ namespace Core.GameStates
             _gameScreen = UIService.Show<GameScreen>();
             _gameScreen.Initialize(levelData);
             _gameScreen.OnTimerExpired += HandleTimerExpired;
+            _gameScreen.OnPauseClicked += HandlePause;
 
             _levelSpawner.SpawnLevel(levelData);
 
@@ -36,6 +37,35 @@ namespace Core.GameStates
             _gameplayController.OnAllStarsMatched += HandleLevelCompleted;
 
             Debug.Log($"Playing Level {levelData.levelNumber}");
+        }
+
+        private void HandlePause()
+        {
+            _gameScreen.PauseTimer();
+            _gameplayController.Deactivate();
+
+            _settingsScreen = UIService.Show<SettingsScreen>();
+            _settingsScreen.OnResumeClicked += HandleResume;
+            _settingsScreen.OnHomeClicked += HandleBackToHome;
+        }
+
+        private void HandleResume()
+        {
+            if (_settingsScreen != null)
+            {
+                _settingsScreen.OnResumeClicked -= HandleResume;
+                _settingsScreen.OnHomeClicked -= HandleBackToHome;
+                UIService.Hide<SettingsScreen>();
+                _settingsScreen = null;
+            }
+
+            _gameScreen.ResumeTimer();
+            _gameplayController.Reactivate();
+        }
+
+        private void HandleBackToHome()
+        {
+            Context.ChangeState<StartGameState>();
         }
 
         private void HandleLevelCompleted()
@@ -56,7 +86,16 @@ namespace Core.GameStates
             if (_gameScreen != null)
             {
                 _gameScreen.OnTimerExpired -= HandleTimerExpired;
+                _gameScreen.OnPauseClicked -= HandlePause;
                 _gameScreen.StopTimer();
+            }
+
+            if (_settingsScreen != null)
+            {
+                _settingsScreen.OnResumeClicked -= HandleResume;
+                _settingsScreen.OnHomeClicked -= HandleBackToHome;
+                UIService.Hide<SettingsScreen>();
+                _settingsScreen = null;
             }
 
             _gameplayController.OnAllStarsMatched -= HandleLevelCompleted;

@@ -57,6 +57,12 @@ namespace Core
             }
         }
 
+        public void Reactivate()
+        {
+            if (_inputCoroutine == null)
+                _inputCoroutine = StartCoroutine(InputLoop());
+        }
+
         private void BuildGridMap()
         {
             _starPositions.Clear();
