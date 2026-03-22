@@ -20,7 +20,7 @@ namespace UI
 
         public void Initialize(LevelData data)
         {
-            levelIndicatorText.text = $"Level {data.levelNumber}";
+            levelIndicatorText.text = $"{data.levelNumber}";
             _remainingTime = data.timeLimit;
             _isPlaying = true;
 

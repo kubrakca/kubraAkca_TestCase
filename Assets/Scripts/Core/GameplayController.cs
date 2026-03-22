@@ -37,7 +37,7 @@ namespace Core
             int halfW = data.gridSize.x / 2;
             int halfH = data.gridSize.y / 2;
             _gridMin = new Vector2Int(-halfW, -halfH);
-            _gridMax = new Vector2Int(halfW - 1, halfH - 1);
+            _gridMax = new Vector2Int(data.gridSize.x - halfW - 1, data.gridSize.y - halfH - 1);
 
             BuildGridMap();
 

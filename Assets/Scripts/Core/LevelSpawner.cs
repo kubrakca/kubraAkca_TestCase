@@ -61,8 +61,10 @@ namespace Core
                 {
                     var gate = Instantiate(_levelDatabase.gatePrefab, _gridRoot);
                     gate.transform.position = new Vector3(gateData.gridPosition.x, gateData.gridPosition.y, 0);
+                    if (gateData.size.x > 0 && gateData.size.y > 0)
+                        gate.transform.localScale = new Vector3(gateData.size.x, gateData.size.y, 1);
                     gate.color = gateData.color;
-                    gate.exitDir = gateData.exitDirection;
+                    
                     gate.ApplyColor();
                     _activeGates.Add(gate);
                 }

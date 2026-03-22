@@ -27,7 +27,7 @@ namespace ScriptableObjects.Scripts
     public struct GateData {
         public Vector2Int gridPosition;
         public ColorType color;
-        public Vector2Int exitDirection;
+        public Vector2Int size;
     }
 
     [System.Serializable]

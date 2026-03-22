@@ -7,7 +7,6 @@ namespace LevelEditor
     {
         [SerializeField] private SpriteRenderer spriteRenderer;
         public ColorType color;
-        public Vector2 exitDir;
 
         public void ApplyColor()
         {
