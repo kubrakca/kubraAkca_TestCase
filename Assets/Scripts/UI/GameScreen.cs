@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using DG.Tweening;
 using ScriptableObjects.Scripts;
 using TMPro;
 using UnityEngine;
@@ -13,6 +14,7 @@ namespace UI
         [SerializeField] private TMP_Text timerText;
         [SerializeField] private TMP_Text levelIndicatorText;
         [SerializeField] private Button pauseButton;
+        [SerializeField] private Color urgentTimerColor = Color.red;
 
         public event Action OnTimerExpired;
         public event Action OnPauseClicked;
@@ -20,11 +22,15 @@ namespace UI
         private Coroutine _timerCoroutine;
         private float _remainingTime;
         private bool _isPlaying;
+        private bool _isUrgent;
+        private Color _defaultTimerColor;
 
         private void Awake()
         {
             if (pauseButton != null)
                 pauseButton.onClick.AddListener(() => OnPauseClicked?.Invoke());
+
+            _defaultTimerColor = timerText.color;
         }
 
         public void Initialize(LevelData data)
@@ -32,6 +38,10 @@ namespace UI
             levelIndicatorText.text = $"{data.levelNumber}";
             _remainingTime = data.timeLimit;
             _isPlaying = true;
+            _isUrgent = false;
+
+            timerText.color = _defaultTimerColor;
+            timerText.transform.localScale = Vector3.one;
 
             _timerCoroutine = StartCoroutine(TimerCountdown());
         }
@@ -42,6 +52,13 @@ namespace UI
             {
                 _remainingTime -= Time.deltaTime;
                 UpdateTimerDisplay();
+
+                if (!_isUrgent && _remainingTime <= 15f)
+                {
+                    _isUrgent = true;
+                    PlayUrgentAnimation();
+                }
+
                 yield return null;
             }
 
@@ -52,6 +69,16 @@ namespace UI
                 UpdateTimerDisplay();
                 OnTimerExpired?.Invoke();
             }
+        }
+
+        private void PlayUrgentAnimation()
+        {
+            timerText.DOColor(urgentTimerColor, 0.3f);
+            timerText.transform
+                .DOScale(1.4f, 0.2f)
+                .SetEase(Ease.OutBack)
+                .OnComplete(() =>
+                    timerText.transform.DOScale(1f, 0.2f).SetEase(Ease.InBack));
         }
 
         private void UpdateTimerDisplay()
@@ -90,6 +117,8 @@ namespace UI
         public override void Hide()
         {
             StopTimer();
+            timerText.DOKill();
+            timerText.transform.DOKill();
             base.Hide();
         }
     }
