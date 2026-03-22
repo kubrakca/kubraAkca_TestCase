@@ -8,18 +8,44 @@ namespace Core.GameStates
     {
         [Inject] private ILevelService _levelService;
 
+        private EndScreen _endScreen;
+
         public override void Enter()
         {
             base.Enter();
-            _levelService.SaveProgress();
-            Debug.Log("End Game State - Progress saved");
 
-            ReturnToStart();
+            if (Context.IsLevelCompleted)
+                _levelService.SaveProgress();
+
+            _endScreen = UIService.Show<EndScreen>();
+            _endScreen.Initialize(Context.IsLevelCompleted);
+            _endScreen.OnContinueClicked += HandleContinue;
+            _endScreen.OnReplayClicked += HandleReplay;
+
+            Debug.Log(Context.IsLevelCompleted ? "Level Completed!" : "Level Failed!");
         }
 
-        private void ReturnToStart()
+        private void HandleContinue()
         {
             Context.ChangeState<StartGameState>();
+        }
+
+        private void HandleReplay()
+        {
+            Context.ChangeState<PlayingGameState>();
+        }
+
+        public override void Exit()
+        {
+            if (_endScreen != null)
+            {
+                _endScreen.OnContinueClicked -= HandleContinue;
+                _endScreen.OnReplayClicked -= HandleReplay;
+                UIService.Hide<EndScreen>();
+                _endScreen = null;
+            }
+
+            base.Exit();
         }
     }
 }

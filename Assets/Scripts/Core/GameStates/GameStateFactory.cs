@@ -12,6 +12,7 @@ namespace Core.GameStates
         private GameState _currentState;
 
         public int SelectedLevelIndex { get; set; }
+        public bool IsLevelCompleted { get; set; }
 
         private void Awake()
         {

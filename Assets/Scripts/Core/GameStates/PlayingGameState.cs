@@ -71,12 +71,14 @@ namespace Core.GameStates
         private void HandleLevelCompleted()
         {
             _levelService.CompleteLevel(Context.SelectedLevelIndex);
+            Context.IsLevelCompleted = true;
             Debug.Log("Level Completed!");
             Context.ChangeState<EndGameState>();
         }
 
         private void HandleTimerExpired()
         {
+            Context.IsLevelCompleted = false;
             Debug.Log("Level Failed - Time's up!");
             Context.ChangeState<EndGameState>();
         }
