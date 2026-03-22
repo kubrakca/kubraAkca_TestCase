@@ -14,6 +14,9 @@ namespace Core.GameStates
         public int SelectedLevelIndex { get; set; }
         public bool IsLevelCompleted { get; set; }
 
+        public float LastCompletionRemainingTime { get; set; }
+        public float LastCompletionTimeLimit { get; set; }
+
         private void Awake()
         {
             _stateDict = new Dictionary<Type, GameState>();

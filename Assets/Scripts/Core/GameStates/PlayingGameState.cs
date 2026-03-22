@@ -70,6 +70,10 @@ namespace Core.GameStates
 
         private void HandleLevelCompleted()
         {
+            Context.LastCompletionRemainingTime = _gameScreen.GetRemainingTime();
+            var levelData = _levelService.GetLevelData(Context.SelectedLevelIndex);
+            Context.LastCompletionTimeLimit = levelData != null ? levelData.timeLimit : 0f;
+
             _levelService.CompleteLevel(Context.SelectedLevelIndex);
             Context.IsLevelCompleted = true;
             Debug.Log("Level Completed!");

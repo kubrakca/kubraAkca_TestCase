@@ -19,7 +19,10 @@ namespace Core.GameStates
                 _levelService.SaveProgress();
 
             _endScreen = UIService.Show<EndScreen>();
-            _endScreen.Initialize(Context.IsLevelCompleted);
+            int stars = 0;
+            if (Context.IsLevelCompleted)
+                stars = EndScreen.ComputeStarRating(Context.LastCompletionRemainingTime, Context.LastCompletionTimeLimit);
+            _endScreen.Initialize(Context.IsLevelCompleted, stars);
             _endScreen.OnContinueClicked += HandleContinue;
             _endScreen.OnReplayClicked += HandleReplay;
 

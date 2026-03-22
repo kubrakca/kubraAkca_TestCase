@@ -123,6 +123,8 @@ namespace UI
             }
         }
 
+        public float GetRemainingTime() => Mathf.Max(0f, _remainingTime);
+
         public override void Hide()
         {
             StopTimer();
