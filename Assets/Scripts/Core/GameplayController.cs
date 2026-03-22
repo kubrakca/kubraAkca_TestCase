@@ -16,6 +16,10 @@ namespace Core
         [SerializeField] private float moveSpeed = 0.2f;
         [SerializeField] private float swipeThreshold = 30f;
 
+        [Header("Star — gate match")]
+        [SerializeField] private float gateHitScaleDownDuration = 0.25f;
+        [SerializeField] private Ease gateHitScaleDownEase = Ease.InBack;
+
         public event Action OnAllStarsMatched;
 
         private Dictionary<Vector2Int, StarElement> _starPositions = new();
@@ -146,9 +150,15 @@ namespace Core
                     Vector3 gateWorld = gate.transform.position;
                     star.transform.DOMove(gateWorld, moveSpeed).SetEase(Ease.OutQuad).OnComplete(() =>
                     {
-                        _levelSpawner.RemoveStar(star);
-                        _isMoving = false;
-                        CheckWinCondition();
+                        star.transform
+                            .DOScale(0f, gateHitScaleDownDuration)
+                            .SetEase(gateHitScaleDownEase)
+                            .OnComplete(() =>
+                            {
+                                _levelSpawner.RemoveStar(star);
+                                _isMoving = false;
+                                CheckWinCondition();
+                            });
                     });
                     return;
                 }
