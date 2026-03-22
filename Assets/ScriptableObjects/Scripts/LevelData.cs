@@ -25,14 +25,15 @@ namespace ScriptableObjects.Scripts
 
     [System.Serializable]
     public struct GateData {
-        public Vector2Int gridPosition;
+        public Vector2 gridPosition;
         public ColorType color;
-        public Vector2Int size;
+        public Vector2 size;
+        public GateOrientation orientation;
     }
 
     [System.Serializable]
     public struct ObstacleData {
         public Vector2Int gridPosition;
-        public Vector2Int size; 
+        public Vector2 size; 
     }
 }

@@ -10,7 +10,14 @@ namespace LevelEditor
 
         public void ApplyColor()
         {
-            spriteRenderer.color = color.ToColor();
+            spriteRenderer.color = color switch
+            {
+                ColorType.Red => Color.red,
+                ColorType.Blue => Color.blue,
+                ColorType.Green => Color.green,
+                ColorType.Yellow => Color.yellow,
+                _ => Color.white
+            };
         }
     }
 }

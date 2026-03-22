@@ -13,6 +13,8 @@ namespace Editor
     {
         private LevelData _targetLevelData;
         private LevelDatabase _levelDatabase;
+        private bool _autoReload;
+        private string _lastDataSnapshot;
 
         private const string LevelsPath = "Assets/ScriptableObjects/Levels";
         private const string DatabasePath = "Assets/ScriptableObjects/Levels/LevelDatabase.asset";
@@ -23,6 +25,25 @@ namespace Editor
         private void OnEnable()
         {
             _levelDatabase = AssetDatabase.LoadAssetAtPath<LevelDatabase>(DatabasePath);
+            EditorApplication.update += OnEditorUpdate;
+        }
+
+        private void OnDisable()
+        {
+            EditorApplication.update -= OnEditorUpdate;
+        }
+
+        private void OnEditorUpdate()
+        {
+            if (!_autoReload || _targetLevelData == null) return;
+
+            var currentSnapshot = JsonUtility.ToJson(_targetLevelData);
+            if (currentSnapshot != _lastDataSnapshot)
+            {
+                _lastDataSnapshot = currentSnapshot;
+                LoadLevelToScene();
+                Repaint();
+            }
         }
 
         private void OnGUI()
@@ -61,8 +82,14 @@ namespace Editor
                 if (GUILayout.Button("LOAD SO TO SCENE", GUILayout.Height(30)))
                 {
                     LoadLevelToScene();
+                    _lastDataSnapshot = JsonUtility.ToJson(_targetLevelData);
                 }
                 GUI.color = Color.white;
+
+                EditorGUILayout.Space(10);
+                _autoReload = EditorGUILayout.Toggle("Auto Reload", _autoReload);
+                if (_autoReload)
+                    EditorGUILayout.HelpBox("SO değişiklikleri otomatik sahneye yansır.", MessageType.Info);
             }
 
             EditorGUILayout.Space(30);
@@ -78,6 +105,10 @@ namespace Editor
         {
             if (_targetLevelData == null) return;
 
+            int offsetX = _targetLevelData.gridSize.x / 2;
+            int offsetY = _targetLevelData.gridSize.y / 2;
+            var offset = new Vector2Int(offsetX, offsetY);
+
             _targetLevelData.stars = new List<StarData>();
             _targetLevelData.gates = new List<GateData>();
             _targetLevelData.obstacles = new List<ObstacleData>();
@@ -86,18 +117,20 @@ namespace Editor
             {
                 _targetLevelData.stars.Add(new StarData
                 {
-                    gridPosition = Vector2Int.RoundToInt(star.transform.position),
+                    gridPosition = Vector2Int.RoundToInt(star.transform.position) + offset,
                     color = star.color
                 });
             }
 
             foreach (var gate in FindObjectsByType<GateElement>(FindObjectsSortMode.None))
             {
+                var isHorizontal = Mathf.Abs(gate.transform.eulerAngles.z - 90f) < 1f;
                 _targetLevelData.gates.Add(new GateData
                 {
-                    gridPosition = Vector2Int.RoundToInt(gate.transform.position),
+                    gridPosition = new Vector2(gate.transform.position.x + offsetX, gate.transform.position.y + offsetY),
                     color = gate.color,
-                    size = Vector2Int.RoundToInt(gate.transform.localScale)
+                    size = new Vector2(gate.transform.localScale.x, gate.transform.localScale.y),
+                    orientation = isHorizontal ? GateOrientation.Horizontal : GateOrientation.Vertical
                 });
             }
 
@@ -105,8 +138,8 @@ namespace Editor
             {
                 _targetLevelData.obstacles.Add(new ObstacleData
                 {
-                    gridPosition = Vector2Int.RoundToInt(obs.transform.position),
-                    size = Vector2Int.RoundToInt(obs.transform.localScale)
+                    gridPosition = Vector2Int.RoundToInt(obs.transform.position) + offset,
+                    size = new Vector2(obs.transform.localScale.x, obs.transform.localScale.y)
                 });
             }
 
@@ -138,12 +171,15 @@ namespace Editor
 
             CreateEditorGrid(_targetLevelData.gridSize);
 
+            int offsetX = _targetLevelData.gridSize.x / 2;
+            int offsetY = _targetLevelData.gridSize.y / 2;
+
             if (_targetLevelData.stars != null)
             {
                 foreach (var starData in _targetLevelData.stars)
                 {
                     var star = (StarElement)PrefabUtility.InstantiatePrefab(_levelDatabase.starPrefab);
-                    star.transform.position = new Vector3(starData.gridPosition.x, starData.gridPosition.y, 0);
+                    star.transform.position = new Vector3(starData.gridPosition.x - offsetX, starData.gridPosition.y - offsetY, 0);
                     star.color = starData.color;
                     star.ApplyColor();
                     star.gameObject.name = $"Star_{starData.color}";
@@ -155,9 +191,12 @@ namespace Editor
                 foreach (var gateData in _targetLevelData.gates)
                 {
                     var gate = (GateElement)PrefabUtility.InstantiatePrefab(_levelDatabase.gatePrefab);
-                    gate.transform.position = new Vector3(gateData.gridPosition.x, gateData.gridPosition.y, 0);
+                    gate.transform.position = new Vector3(gateData.gridPosition.x - offsetX, gateData.gridPosition.y - offsetY, 0);
+                    gate.transform.rotation = Quaternion.identity;
                     if (gateData.size.x > 0 && gateData.size.y > 0)
                         gate.transform.localScale = new Vector3(gateData.size.x, gateData.size.y, 1);
+                    if (gateData.orientation == GateOrientation.Horizontal)
+                        gate.transform.rotation = Quaternion.Euler(0, 0, 90);
                     gate.color = gateData.color;
                     
                     gate.ApplyColor();
@@ -170,7 +209,7 @@ namespace Editor
                 foreach (var obstacleData in _targetLevelData.obstacles)
                 {
                     var obstacle = (ObstacleElement)PrefabUtility.InstantiatePrefab(_levelDatabase.obstaclePrefab);
-                    obstacle.transform.position = new Vector3(obstacleData.gridPosition.x, obstacleData.gridPosition.y, 0);
+                    obstacle.transform.position = new Vector3(obstacleData.gridPosition.x - offsetX, obstacleData.gridPosition.y - offsetY, 0);
                     obstacle.transform.localScale = new Vector3(obstacleData.size.x, obstacleData.size.y, 1);
                     obstacle.ApplyColor();
                     obstacle.gameObject.name = "Obstacle";

@@ -19,7 +19,7 @@ namespace Core
         public event Action OnAllStarsMatched;
 
         private Dictionary<Vector2Int, StarElement> _starPositions = new();
-        private Dictionary<Vector2Int, GateElement> _gatePositions = new();
+        private Dictionary<Vector2Int, GateElement> _gateBorderPositions = new();
         private HashSet<Vector2Int> _obstaclePositions = new();
 
         private Camera _mainCamera;
@@ -42,7 +42,7 @@ namespace Core
             BuildGridMap();
 
             Debug.Log($"Grid bounds: {_gridMin} to {_gridMax}");
-            Debug.Log($"Gate positions: {string.Join(", ", _gatePositions.Keys)}");
+            Debug.Log($"Gate border keys: {string.Join(", ", _gateBorderPositions.Keys)}");
             Debug.Log($"Star positions: {string.Join(", ", _starPositions.Keys)}");
 
             _inputCoroutine = StartCoroutine(InputLoop());
@@ -66,7 +66,7 @@ namespace Core
         private void BuildGridMap()
         {
             _starPositions.Clear();
-            _gatePositions.Clear();
+            _gateBorderPositions.Clear();
             _obstaclePositions.Clear();
 
             foreach (var star in _levelSpawner.GetActiveStars())
@@ -77,8 +77,9 @@ namespace Core
 
             foreach (var gate in _levelSpawner.GetActiveGates())
             {
-                var gridPos = Vector2Int.RoundToInt(gate.transform.position);
-                _gatePositions[gridPos] = gate;
+                var wp = gate.transform.position;
+                var key = new Vector2Int(Mathf.RoundToInt(wp.x * 2), Mathf.RoundToInt(wp.y * 2));
+                _gateBorderPositions[key] = gate;
             }
 
             foreach (var obstacle in _levelSpawner.GetActiveObstacles())
@@ -132,15 +133,9 @@ namespace Core
 
         private void TryMoveStar(Vector2Int from, Vector2Int direction)
         {
-            Vector2Int target = from + direction;
+            var gateKey = new Vector2Int(from.x * 2 + direction.x, from.y * 2 + direction.y);
 
-            if (_obstaclePositions.Contains(target))
-                return;
-
-            if (_starPositions.ContainsKey(target))
-                return;
-
-            if (_gatePositions.TryGetValue(target, out var gate))
+            if (_gateBorderPositions.TryGetValue(gateKey, out var gate))
             {
                 var star = _starPositions[from];
                 if (star.color == gate.color)
@@ -148,8 +143,8 @@ namespace Core
                     _isMoving = true;
                     _starPositions.Remove(from);
 
-                    Vector3 targetWorld = new Vector3(target.x, target.y, 0);
-                    star.transform.DOMove(targetWorld, moveSpeed).SetEase(Ease.OutQuad).OnComplete(() =>
+                    Vector3 gateWorld = gate.transform.position;
+                    star.transform.DOMove(gateWorld, moveSpeed).SetEase(Ease.OutQuad).OnComplete(() =>
                     {
                         _levelSpawner.RemoveStar(star);
                         _isMoving = false;
@@ -160,7 +155,15 @@ namespace Core
                 return;
             }
 
+            Vector2Int target = from + direction;
+
             if (!IsInsideGrid(target))
+                return;
+
+            if (_obstaclePositions.Contains(target))
+                return;
+
+            if (_starPositions.ContainsKey(target))
                 return;
 
             _isMoving = true;
