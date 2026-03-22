@@ -10,6 +10,7 @@ namespace Core.GameStates
 
         private EndScreen _endScreen;
 
+        // ReSharper disable Unity.PerformanceAnalysis
         public override void Enter()
         {
             base.Enter();

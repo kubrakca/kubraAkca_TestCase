@@ -1,4 +1,3 @@
-using Core;
 using ScriptableObjects;
 using UI;
 using UnityEngine;
@@ -15,16 +14,6 @@ namespace Installers
             Container.BindInstance(levelDatabase).AsSingle();
 
             Container.BindInterfacesAndSelfTo<LevelManager>()
-                .FromNewComponentOnNewGameObject()
-                .AsSingle()
-                .NonLazy();
-
-            Container.Bind<LevelSpawner>()
-                .FromNewComponentOnNewGameObject()
-                .AsSingle()
-                .NonLazy();
-
-            Container.Bind<GameplayController>()
                 .FromNewComponentOnNewGameObject()
                 .AsSingle()
                 .NonLazy();
