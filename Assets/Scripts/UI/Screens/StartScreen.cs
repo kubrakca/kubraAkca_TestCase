@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using Enums;
+using UI;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Pool;
+using UnityEngine.UI;
 using Zenject;
 
-namespace UI
+namespace Screens
 {
     public class StartScreen : UIView
     {
@@ -15,6 +16,7 @@ namespace UI
         [SerializeField] private LevelButtonView buttonPrefab;
         [SerializeField] private Transform buttonContainer;
         [SerializeField] private Button startButton;
+        [SerializeField] private int levelButtonsStartSiblingIndex;
 
         [Header("Play Button Animation")]
         [SerializeField] private float playButtonScaleTarget = 1.1f;
@@ -97,6 +99,10 @@ namespace UI
 
                 _activeButtons.Add(btn);
             }
+
+            int n = _activeButtons.Count;
+            for (int i = n - 1; i >= 0; i--)
+                _activeButtons[i].transform.SetSiblingIndex(levelButtonsStartSiblingIndex + (n - 1 - i));
         }
 
         private void HandleLevelSelected(int dataIndex)

@@ -173,6 +173,14 @@ MonoBehaviour:
   timerText: {fileID: 3611196320998563965}
   levelIndicatorText: {fileID: 2778181829127805191}
   pauseButton: {fileID: 3473960704666278848}
+  urgentTimerColor: {r: 1, g: 0, b: 0, a: 1}
+  urgentThreshold: 15
+  urgentColorDuration: 0.3
+  urgentScaleUp: 1.4
+  urgentScaleUpDuration: 0.2
+  urgentScaleUpEase: 27
+  urgentScaleDownDuration: 0.2
+  urgentScaleDownEase: 26
 --- !u!1 &1406112428410099718
 GameObject:
   m_ObjectHideFlags: 0
@@ -575,8 +583,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.24448201, g: 0.3345837, b: 0.7735849, a: 1}
-  m_RaycastTarget: 1
+  m_Color: {r: 0.33154598, g: 0.11863652, b: 0.5849056, a: 1}
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -653,7 +661,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.2991723, g: 0.5860885, b: 0.7830189, a: 1}
+  m_Color: {r: 0.664261, g: 0.14417945, b: 0.6792453, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -775,14 +783,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.24313726, g: 0.33333334, b: 0.77254903, a: 1}
+  m_Color: {r: 0.33333334, g: 0.11764706, b: 0.58431375, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f80f226a3d0c24d81986f1e7f7a57c32, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 97320be81a4354fa792a311eba8aca6b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

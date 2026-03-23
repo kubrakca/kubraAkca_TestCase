@@ -63,15 +63,31 @@ namespace UI
         {
             KillStarAnimation();
 
-            if (completedUIContent != null)
-                completedUIContent.SetActive(isCompleted);
-            if (notCompletedUIContent != null)
-                notCompletedUIContent.SetActive(!isCompleted);
+            ApplyCompletedPanelsExclusive(isCompleted);
 
             if (isCompleted)
                 PlayStarReveal(starRating);
             else
                 ResetStarsVisual();
+        }
+
+        private void ApplyCompletedPanelsExclusive(bool showCompleted)
+        {
+            if (completedUIContent != null)
+                completedUIContent.SetActive(false);
+            if (notCompletedUIContent != null)
+                notCompletedUIContent.SetActive(false);
+
+            if (showCompleted)
+            {
+                if (completedUIContent != null)
+                    completedUIContent.SetActive(true);
+            }
+            else
+            {
+                if (notCompletedUIContent != null)
+                    notCompletedUIContent.SetActive(true);
+            }
         }
 
         private void PlayStarReveal(int earnedStars)
