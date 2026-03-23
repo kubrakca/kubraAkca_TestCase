@@ -20,6 +20,10 @@ namespace Core
         private readonly List<GateElement> _activeGates = new();
         private readonly List<ObstacleElement> _activeObstacles = new();
 
+        [Header("Camera fit")]
+        [Tooltip("Extra world units beyond grid bounds (cells + border gates).")]
+        [SerializeField] private float cameraFitMarginWorld = 0.55f;
+
         private void Awake()
         {
             _gridVisualizer = gameObject.AddComponent<GridVisualizer>();
@@ -39,18 +43,7 @@ namespace Core
 
             float centerX = (gridMin.x + gridMax.x) / 2f;
             float centerY = (gridMin.y + gridMax.y) / 2f;
-            var cam = Camera.main;
-            if (cam != null)
-            {
-                cam.transform.position = new Vector3(centerX, centerY, cam.transform.position.z);
-
-                float gridWidth = data.gridSize.x + 1f;
-                float gridHeight = data.gridSize.y + 1f;
-                float screenAspect = (float)Screen.width / Screen.height;
-                float sizeForHeight = gridHeight / 2f;
-                float sizeForWidth = gridWidth / (2f * screenAspect);
-                cam.orthographicSize = Mathf.Max(sizeForHeight, sizeForWidth) + 1f;
-            }
+            FitCameraToGrid(gridMin, gridMax, centerX, centerY);
 
             if (data.stars != null)
             {
@@ -76,7 +69,6 @@ namespace Core
                     if (gateData.orientation == Enums.GateOrientation.Horizontal)
                         gate.transform.rotation = Quaternion.Euler(0, 0, 90);
                     gate.color = gateData.color;
-                    
                     gate.ApplyColor();
                     _activeGates.Add(gate);
                 }
@@ -111,6 +103,31 @@ namespace Core
         public List<StarElement> GetActiveStars() => _activeStars;
         public List<GateElement> GetActiveGates() => _activeGates;
         public List<ObstacleElement> GetActiveObstacles() => _activeObstacles;
+
+        private void FitCameraToGrid(Vector2Int gridMin, Vector2Int gridMax, float centerX, float centerY)
+        {
+            var cam = Camera.main;
+            if (cam == null)
+            {
+                Debug.LogWarning("[LevelSpawner] Camera.main is null. Tag your gameplay camera with MainCamera.");
+                return;
+            }
+
+            cam.orthographic = true;
+            cam.transform.position = new Vector3(centerX, centerY, cam.transform.position.z);
+
+            float worldWidth = gridMax.x - gridMin.x + 1f;
+            float worldHeight = gridMax.y - gridMin.y + 1f;
+            float halfW = worldWidth * 0.5f + cameraFitMarginWorld;
+            float halfH = worldHeight * 0.5f + cameraFitMarginWorld;
+
+            float aspect = cam.pixelHeight > 0
+                ? (float)cam.pixelWidth / cam.pixelHeight
+                : Mathf.Max(0.0001f, cam.aspect);
+            float sizeForHeight = halfH;
+            float sizeForWidth = halfW / aspect;
+            cam.orthographicSize = Mathf.Max(sizeForHeight, sizeForWidth);
+        }
 
         public void ClearLevel()
         {

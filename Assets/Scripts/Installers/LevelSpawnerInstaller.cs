@@ -1,5 +1,4 @@
 using Core;
-using Core.CameraRig;
 using Zenject;
 
 namespace Installers
@@ -8,10 +7,6 @@ namespace Installers
     {
         public override void InstallBindings()
         {
-            Container.Bind<IGameplayCamera>()
-                .To<GameplayCameraProvider>()
-                .AsSingle();
-
             Container.Bind<LevelSpawner>()
                 .FromNewComponentOnNewGameObject()
                 .AsSingle()
