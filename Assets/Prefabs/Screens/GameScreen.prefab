@@ -173,7 +173,7 @@ MonoBehaviour:
   timerText: {fileID: 3611196320998563965}
   levelIndicatorText: {fileID: 2778181829127805191}
   pauseButton: {fileID: 3473960704666278848}
-  urgentTimerColor: {r: 1, g: 0, b: 0, a: 1}
+  urgentTimerColor: {r: 1, g: 0.43529412, b: 0, a: 1}
   urgentThreshold: 15
   urgentColorDuration: 0.3
   urgentScaleUp: 1.4

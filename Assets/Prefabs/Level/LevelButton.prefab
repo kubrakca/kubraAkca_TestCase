@@ -227,11 +227,11 @@ MonoBehaviour:
   levelText: {fileID: 10019157809638490}
   button: {fileID: 7610010730157525165}
   backgroundImage: {fileID: 639308870815765114}
-  textColor: {fileID: 0}
-  disabledColor: {r: 0.27450982, g: 0.22352941, b: 0.22352941, a: 1}
   lockedColor: {r: 0.5529412, g: 0.5764706, b: 0.24313726, a: 1}
-  disableTextColor: {r: 0.40784314, g: 0.34509805, b: 0.34509805, a: 1}
-  lockedTextColor: {r: 0.8980392, g: 0.6039216, b: 0.16862746, a: 0.5372549}
+  activeColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  selectedSize: 3
+  notSelectedSize: 0.8
 --- !u!114 &7610010730157525165
 MonoBehaviour:
   m_ObjectHideFlags: 0
