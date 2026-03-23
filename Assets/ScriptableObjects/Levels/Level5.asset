@@ -13,15 +13,13 @@ MonoBehaviour:
   m_Name: Level5
   m_EditorClassIdentifier: 
   levelNumber: 5
-  timeLimit: 35
+  timeLimit: 80
   gridSize: {x: 5, y: 5}
   stars:
   - gridPosition: {x: 0, y: 4}
     color: 2
   - gridPosition: {x: 1, y: 4}
     color: 4
-  - gridPosition: {x: 2, y: 4}
-    color: 3
   - gridPosition: {x: 2, y: 4}
     color: 3
   - gridPosition: {x: 3, y: 4}

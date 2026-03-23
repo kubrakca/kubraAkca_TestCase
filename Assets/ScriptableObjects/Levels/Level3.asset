@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level3
   m_EditorClassIdentifier: 
   levelNumber: 3
-  timeLimit: 50
+  timeLimit: 60
   gridSize: {x: 3, y: 5}
   stars:
   - gridPosition: {x: 0, y: 4}
