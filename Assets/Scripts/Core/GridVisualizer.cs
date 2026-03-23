@@ -2,14 +2,28 @@ using UnityEngine;
 
 namespace Core
 {
+    /// <summary>Procedural board backdrop: tinted plane, per-cell line sprites, and outer border under gameplay entities.</summary>
     public class GridVisualizer : MonoBehaviour
     {
+        #region SerializeField
+
         [SerializeField] private Color backgroundColor = new Color(0.1f, 0.1f, 0.2f, 0.9f);
         [SerializeField] private Color lineColor = new Color(0.3f, 0.3f, 0.5f, 0.5f);
         [SerializeField] private Color borderColor = new Color(0.4f, 0.4f, 0.6f, 0.8f);
         [SerializeField] private float lineThickness = 0.03f;
         [SerializeField] private float borderThickness = 0.08f;
 
+        #endregion
+
+        #region Private Fields
+
+        private static Sprite _cachedSquare;
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>Creates child sprites under <paramref name="parent"/> covering inclusive cell range.</summary>
         public void GenerateGrid(Vector2Int gridMin, Vector2Int gridMax, Transform parent)
         {
             float left = gridMin.x - 0.5f;
@@ -26,6 +40,10 @@ namespace Core
             CreateGridLines(gridMin, gridMax, left, right, bottom, top, centerX, centerY, width, height, parent);
             CreateBorder(centerX, centerY, width, height, parent);
         }
+
+        #endregion
+
+        #region Private Methods
 
         private void CreateBackground(float cx, float cy, float w, float h, Transform parent)
         {
@@ -97,8 +115,6 @@ namespace Core
             return sr;
         }
 
-        private static Sprite _cachedSquare;
-
         private static Sprite CreateWhiteSquareSprite()
         {
             if (_cachedSquare != null) return _cachedSquare;
@@ -112,5 +128,7 @@ namespace Core
             _cachedSquare = Sprite.Create(tex, new Rect(0, 0, 4, 4), new Vector2(0.5f, 0.5f), 4);
             return _cachedSquare;
         }
+
+        #endregion
     }
 }

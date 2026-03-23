@@ -8,11 +8,26 @@ using Zenject;
 
 namespace Core
 {
+    /// <summary>
+    /// Builds the level root: background grid visuals, instances stars/gates/obstacles from <see cref="LevelData"/>, fits orthographic camera.
+    /// </summary>
     public class LevelSpawner : MonoBehaviour
     {
-        [Inject] private LevelDatabase _levelDatabase;
+        #region SerializeField
+
+        [Header("Camera fit")]
+        [Tooltip("Extra world units beyond grid bounds (cells + border gates).")]
+        [SerializeField] private float cameraFitMarginWorld = 0.55f;
+
+        #endregion
+
+        #region Public Fields
 
         public event Action OnAllStarsCollected;
+
+        #endregion
+
+        #region Private Fields
 
         private Transform _gridRoot;
         private GridVisualizer _gridVisualizer;
@@ -20,15 +35,26 @@ namespace Core
         private readonly List<GateElement> _activeGates = new();
         private readonly List<ObstacleElement> _activeObstacles = new();
 
-        [Header("Camera fit")]
-        [Tooltip("Extra world units beyond grid bounds (cells + border gates).")]
-        [SerializeField] private float cameraFitMarginWorld = 0.55f;
+        #endregion
+
+        #region Dependency Injection
+
+        [Inject] private LevelDatabase _levelDatabase;
+
+        #endregion
+
+        #region Unity Lifecycle
 
         private void Awake()
         {
             _gridVisualizer = gameObject.AddComponent<GridVisualizer>();
         }
 
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>Clears previous level, draws grid, spawns entities, recenters and sizes main camera to bounds.</summary>
         public void SpawnLevel(LevelData data)
         {
             ClearLevel();
@@ -87,6 +113,7 @@ namespace Core
             }
         }
 
+        /// <summary>Destroys star instance; raises <see cref="OnAllStarsCollected"/> when the last one is removed.</summary>
         public void RemoveStar(StarElement star)
         {
             if (_activeStars.Remove(star))
@@ -104,6 +131,25 @@ namespace Core
         public List<GateElement> GetActiveGates() => _activeGates;
         public List<ObstacleElement> GetActiveObstacles() => _activeObstacles;
 
+        /// <summary>Removes the whole level hierarchy and clears cached element lists.</summary>
+        public void ClearLevel()
+        {
+            _activeStars.Clear();
+            _activeGates.Clear();
+            _activeObstacles.Clear();
+
+            if (_gridRoot != null)
+            {
+                Destroy(_gridRoot.gameObject);
+                _gridRoot = null;
+            }
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>Ensures the full grid (plus margin) is visible for current screen aspect.</summary>
         private void FitCameraToGrid(Vector2Int gridMin, Vector2Int gridMax, float centerX, float centerY)
         {
             var cam = Camera.main;
@@ -129,17 +175,6 @@ namespace Core
             cam.orthographicSize = Mathf.Max(sizeForHeight, sizeForWidth);
         }
 
-        public void ClearLevel()
-        {
-            _activeStars.Clear();
-            _activeGates.Clear();
-            _activeObstacles.Clear();
-
-            if (_gridRoot != null)
-            {
-                Destroy(_gridRoot.gameObject);
-                _gridRoot = null;
-            }
-        }
+        #endregion
     }
 }

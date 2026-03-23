@@ -5,10 +5,22 @@ using Zenject;
 
 namespace Core.GameStates
 {
+    /// <summary>Main menu: level picker and play button; updates <see cref="GameStateFactory.SelectedLevelIndex"/>.</summary>
     public class StartGameState : GameState
     {
+        #region Dependency Injection
+
         [Inject] private ILevelService _levelService;
+
+        #endregion
+
+        #region Private Fields
+
         private StartScreen _startScreen;
+
+        #endregion
+
+        #region Public Methods
 
         public override void Enter()
         {
@@ -25,17 +37,6 @@ namespace Core.GameStates
             }
         }
 
-        private void HandleLevelSelected(int levelIndex)
-        {
-            Context.SelectedLevelIndex = levelIndex;
-            Debug.Log($"Level {levelIndex} selected");
-        }
-
-        private void HandlePlayRequested()
-        {
-            Context.ChangeState<PlayingGameState>();
-        }
-
         public override void Exit()
         {
             if (_startScreen != null)
@@ -47,5 +48,22 @@ namespace Core.GameStates
             UIService.Hide<StartScreen>();
             base.Exit();
         }
+
+        #endregion
+
+        #region Private Methods
+
+        private void HandleLevelSelected(int levelIndex)
+        {
+            Context.SelectedLevelIndex = levelIndex;
+            Debug.Log($"Level {levelIndex} selected");
+        }
+
+        private void HandlePlayRequested()
+        {
+            Context.ChangeState<PlayingGameState>();
+        }
+
+        #endregion
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace ScriptableObjects.Scripts
 {
+    /// <summary>Designer-authored level: grid size, time limit, and lists of stars, gates, and obstacles (grid-space data).</summary>
     [CreateAssetMenu(fileName = "NewLevel", menuName = "Level System/Puzzle Level Data")]
     public class LevelData : ScriptableObject
     {

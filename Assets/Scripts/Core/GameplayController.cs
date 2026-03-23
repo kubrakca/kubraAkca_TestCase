@@ -9,9 +9,12 @@ using Zenject;
 
 namespace Core
 {
+    /// <summary>
+    /// Puzzle input and rules: pick a star by tap, swipe to move or match a gate; tracks grid occupancy and win when no stars remain.
+    /// </summary>
     public class GameplayController : MonoBehaviour
     {
-        [Inject] private LevelSpawner _levelSpawner;
+        #region SerializeField
 
         [SerializeField] private float moveSpeed = 0.2f;
         [SerializeField] private float swipeThreshold = 30f;
@@ -20,11 +23,16 @@ namespace Core
         [SerializeField] private float gateHitScaleDownDuration = 0.25f;
         [SerializeField] private Ease gateHitScaleDownEase = Ease.InBack;
 
-        public event Action OnAllStarsMatched;
+        #endregion
 
-        private Dictionary<Vector2Int, StarElement> _starPositions = new();
-        private Dictionary<Vector2Int, GateElement> _gateBorderPositions = new();
-        private HashSet<Vector2Int> _obstaclePositions = new();
+        #region Public Fields
+        public event Action OnAllStarsMatched;
+        #endregion
+        
+        #region Private Fields
+        private readonly Dictionary<Vector2Int, StarElement> _starPositions = new();
+        private readonly Dictionary<Vector2Int, GateElement> _gateBorderPositions = new();
+        private readonly HashSet<Vector2Int> _obstaclePositions = new();
 
         private Camera _mainCamera;
         private Coroutine _inputCoroutine;
@@ -32,7 +40,15 @@ namespace Core
 
         private Vector2Int _gridMin;
         private Vector2Int _gridMax;
+        #endregion
+        
+        #region Dependency Injection
+        [Inject] private LevelSpawner _levelSpawner;
+        #endregion
 
+        #region Public Methods
+
+        /// <summary>Caches camera, rebuilds logical grid from spawned entities, starts input handling.</summary>
         public void Initialize(LevelData data)
         {
             _mainCamera = Camera.main;
@@ -52,6 +68,7 @@ namespace Core
             _inputCoroutine = StartCoroutine(InputLoop());
         }
 
+        /// <summary>Stops swipe/tap processing (e.g. while pause menu is open).</summary>
         public void Deactivate()
         {
             if (_inputCoroutine != null)
@@ -61,12 +78,17 @@ namespace Core
             }
         }
 
+        /// <summary>Resumes input after <see cref="Deactivate"/>.</summary>
         public void Reactivate()
         {
             if (_inputCoroutine == null)
                 _inputCoroutine = StartCoroutine(InputLoop());
         }
+        #endregion
+        
+        #region Private Methods
 
+        /// <summary>Fills star/obstacle cell maps and gate map (gates keyed on half-step border coordinates).</summary>
         private void BuildGridMap()
         {
             _starPositions.Clear();
@@ -93,6 +115,8 @@ namespace Core
             }
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
+        /// <summary>Waits for press on a star, then release; applies swipe as a grid move if strong enough.</summary>
         private IEnumerator InputLoop()
         {
             while (true)
@@ -135,6 +159,7 @@ namespace Core
                    pos.y >= _gridMin.y && pos.y <= _gridMax.y;
         }
 
+        /// <summary>Resolves gate match (same color) or empty cell slide; blocks obstacles, other stars, and out-of-bounds.</summary>
         private void TryMoveStar(Vector2Int from, Vector2Int direction)
         {
             var gateKey = new Vector2Int(from.x * 2 + direction.x, from.y * 2 + direction.y);
@@ -195,5 +220,6 @@ namespace Core
                 OnAllStarsMatched?.Invoke();
             }
         }
+        #endregion
     }
 }

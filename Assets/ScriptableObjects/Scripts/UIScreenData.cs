@@ -8,6 +8,6 @@ namespace ScriptableObjects
     
     public class UIScreenData : ScriptableObject
     {
-        public List<UIView> uıViews;
+        public List<UIView> uiViews;
     }
 }

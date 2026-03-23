@@ -5,8 +5,19 @@ namespace LevelEditor
 {
     public class GateElement : MonoBehaviour
     {
+        #region SerializeField
+
         [SerializeField] private SpriteRenderer spriteRenderer;
+
+        #endregion
+
+        #region Public Fields
+
         public ColorType color;
+
+        #endregion
+
+        #region Public Methods
 
         public void ApplyColor()
         {
@@ -19,5 +30,7 @@ namespace LevelEditor
                 _ => Color.white
             };
         }
+
+        #endregion
     }
 }

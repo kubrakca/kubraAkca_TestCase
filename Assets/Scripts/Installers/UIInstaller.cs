@@ -6,7 +6,13 @@ namespace Installers
 {
     public class UIInstaller : MonoInstaller
     {
+        #region SerializeField
+
         [SerializeField] private UIManager uiManagerPrefab;
+
+        #endregion
+
+        #region Public Methods
 
         // ReSharper disable Unity.PerformanceAnalysis
         public override void InstallBindings()
@@ -16,5 +22,7 @@ namespace Installers
                 .AsSingle()
                 .NonLazy();
         }
+
+        #endregion
     }
 }

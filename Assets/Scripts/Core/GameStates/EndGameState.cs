@@ -4,11 +4,22 @@ using UI;
 
 namespace Core.GameStates
 {
+    /// <summary>Post-level UI: win/lose panels, star score on success, persist progress when completed.</summary>
     public class EndGameState : GameState
     {
+        #region Dependency Injection
+
         [Inject] private ILevelService _levelService;
 
+        #endregion
+
+        #region Private Fields
+
         private EndScreen _endScreen;
+
+        #endregion
+
+        #region Public Methods
 
         // ReSharper disable Unity.PerformanceAnalysis
         public override void Enter()
@@ -29,16 +40,6 @@ namespace Core.GameStates
             Debug.Log(Context.IsLevelCompleted ? "Level Completed!" : "Level Failed!");
         }
 
-        private void HandleContinue()
-        {
-            Context.ChangeState<StartGameState>();
-        }
-
-        private void HandleReplay()
-        {
-            Context.ChangeState<PlayingGameState>();
-        }
-
         public override void Exit()
         {
             if (_endScreen != null)
@@ -51,5 +52,21 @@ namespace Core.GameStates
 
             base.Exit();
         }
+
+        #endregion
+
+        #region Private Methods
+
+        private void HandleContinue()
+        {
+            Context.ChangeState<StartGameState>();
+        }
+
+        private void HandleReplay()
+        {
+            Context.ChangeState<PlayingGameState>();
+        }
+
+        #endregion
     }
 }

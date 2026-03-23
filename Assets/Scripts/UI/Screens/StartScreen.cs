@@ -10,8 +10,11 @@ using Zenject;
 
 namespace Screens
 {
+    /// <summary>Level grid buttons (pooled), play CTA; fires selection and play events consumed by the start game state.</summary>
     public class StartScreen : UIView
     {
+        #region SerializeField
+
         [Header("References")]
         [SerializeField] private LevelButtonView buttonPrefab;
         [SerializeField] private Transform buttonContainer;
@@ -23,15 +26,31 @@ namespace Screens
         [SerializeField] private float playButtonScaleDuration = 0.6f;
         [SerializeField] private Ease playButtonEase = Ease.InOutSine;
 
-        [Inject] private ILevelService _levelService;
+        #endregion
+
+        #region Public Fields
 
         public event Action<int> OnLevelSelected;
         public event Action OnPlayRequested;
+
+        #endregion
+
+        #region Private Fields
 
         private IObjectPool<LevelButtonView> _pool;
         private readonly List<LevelButtonView> _activeButtons = new();
         private int _selectedLevelIndex = -1;
         private Tween _playButtonTween;
+
+        #endregion
+
+        #region Dependency Injection
+
+        [Inject] private ILevelService _levelService;
+
+        #endregion
+
+        #region Unity Lifecycle
 
         private void Awake()
         {
@@ -50,6 +69,10 @@ namespace Screens
             }
         }
 
+        #endregion
+
+        #region Public Methods
+
         public override void Show()
         {
             base.Show();
@@ -64,6 +87,10 @@ namespace Screens
             base.Hide();
             ClearButtons();
         }
+
+        #endregion
+
+        #region Private Methods
 
         private void StartPlayButtonAnimation()
         {
@@ -139,5 +166,7 @@ namespace Screens
             }
             _activeButtons.Clear();
         }
+
+        #endregion
     }
 }

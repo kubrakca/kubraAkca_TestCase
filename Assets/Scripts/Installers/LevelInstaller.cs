@@ -7,7 +7,13 @@ namespace Installers
 {
     public class LevelInstaller : MonoInstaller
     {
+        #region SerializeField
+
         [SerializeField] private LevelDatabase levelDatabase;
+
+        #endregion
+
+        #region Public Methods
 
         public override void InstallBindings()
         {
@@ -18,5 +24,7 @@ namespace Installers
                 .AsSingle()
                 .NonLazy();
         }
+
+        #endregion
     }
 }

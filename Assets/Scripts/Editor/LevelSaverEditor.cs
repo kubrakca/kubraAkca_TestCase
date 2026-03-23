@@ -11,6 +11,8 @@ namespace Editor
 {
     public class LevelSaverEditor : EditorWindow
     {
+        #region Private Fields
+
         private LevelData _targetLevelData;
         private LevelDatabase _levelDatabase;
         private bool _autoReload;
@@ -19,8 +21,11 @@ namespace Editor
         private const string LevelsPath = "Assets/ScriptableObjects/Levels";
         private const string DatabasePath = "Assets/ScriptableObjects/Levels/LevelDatabase.asset";
 
-        [MenuItem("Tools/Level System/Level Editor & Saver")]
-        public static void ShowWindow() => GetWindow<LevelSaverEditor>("Level Editor");
+        private static Sprite _editorSquare;
+
+        #endregion
+
+        #region Unity Lifecycle
 
         private void OnEnable()
         {
@@ -31,19 +36,6 @@ namespace Editor
         private void OnDisable()
         {
             EditorApplication.update -= OnEditorUpdate;
-        }
-
-        private void OnEditorUpdate()
-        {
-            if (!_autoReload || _targetLevelData == null) return;
-
-            var currentSnapshot = JsonUtility.ToJson(_targetLevelData);
-            if (currentSnapshot != _lastDataSnapshot)
-            {
-                _lastDataSnapshot = currentSnapshot;
-                LoadLevelToScene();
-                Repaint();
-            }
         }
 
         private void OnGUI()
@@ -89,7 +81,7 @@ namespace Editor
                 EditorGUILayout.Space(10);
                 _autoReload = EditorGUILayout.Toggle("Auto Reload", _autoReload);
                 if (_autoReload)
-                    EditorGUILayout.HelpBox("SO değişiklikleri otomatik sahneye yansır.", MessageType.Info);
+                    EditorGUILayout.HelpBox("When enabled, changes to the ScriptableObject reload into the scene automatically.", MessageType.Info);
             }
 
             EditorGUILayout.Space(30);
@@ -99,6 +91,30 @@ namespace Editor
                 CreateNewLevel();
             }
             GUI.color = Color.white;
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        [MenuItem("Tools/Level System/Level Editor & Saver")]
+        public static void ShowWindow() => GetWindow<LevelSaverEditor>("Level Editor");
+
+        #endregion
+
+        #region Private Methods
+
+        private void OnEditorUpdate()
+        {
+            if (!_autoReload || _targetLevelData == null) return;
+
+            var currentSnapshot = JsonUtility.ToJson(_targetLevelData);
+            if (currentSnapshot != _lastDataSnapshot)
+            {
+                _lastDataSnapshot = currentSnapshot;
+                LoadLevelToScene();
+                Repaint();
+            }
         }
 
         private void SaveLevel()
@@ -198,7 +214,7 @@ namespace Editor
                     if (gateData.orientation == GateOrientation.Horizontal)
                         gate.transform.rotation = Quaternion.Euler(0, 0, 90);
                     gate.color = gateData.color;
-                    
+
                     gate.ApplyColor();
                     gate.gameObject.name = $"Gate_{gateData.color}";
                 }
@@ -263,8 +279,6 @@ namespace Editor
             }
         }
 
-        private static Sprite _editorSquare;
-
         private static Sprite CreateSquareSprite()
         {
             if (_editorSquare != null) return _editorSquare;
@@ -321,5 +335,7 @@ namespace Editor
             _targetLevelData = newLevel;
             Debug.Log($"<color=yellow>Level {nextLevelNumber} created at {assetPath}</color>");
         }
+
+        #endregion
     }
 }

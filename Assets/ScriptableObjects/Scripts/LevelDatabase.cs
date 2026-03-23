@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace ScriptableObjects
 {
+    /// <summary>Ordered list of <see cref="LevelData"/> assets plus prefabs used when spawning level entities in play or editor.</summary>
     [CreateAssetMenu(fileName = "LevelDatabase", menuName = "Level System/Level Database")]
     public class LevelDatabase : ScriptableObject
     {
@@ -17,6 +18,7 @@ namespace ScriptableObjects
 
         public int LevelCount => levels.Count;
 
+        /// <summary>Safe accessor; returns null when index is out of range.</summary>
         public LevelData GetLevel(int index)
         {
             if (index < 0 || index >= levels.Count) return null;

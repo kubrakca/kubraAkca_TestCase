@@ -6,8 +6,11 @@ using UnityEngine.UI;
 
 namespace UI
 {
+    /// <summary>Win/lose summary, animated star rating on success, continue to menu or replay current level.</summary>
     public class EndScreen : UIView
     {
+        #region SerializeField
+
         [Header("Content Panels")]
         [SerializeField] private GameObject completedUIContent;
         [SerializeField] private GameObject notCompletedUIContent;
@@ -23,10 +26,22 @@ namespace UI
         [SerializeField] private Button continueButton;
         [SerializeField] private Button replayButton;
 
+        #endregion
+
+        #region Public Fields
+
         public event Action OnContinueClicked;
         public event Action OnReplayClicked;
 
+        #endregion
+
+        #region Private Fields
+
         private readonly List<Color> _starOriginalColors = new();
+
+        #endregion
+
+        #region Unity Lifecycle
 
         private void Awake()
         {
@@ -38,15 +53,11 @@ namespace UI
             CacheStarOriginalColors();
         }
 
-        private void CacheStarOriginalColors()
-        {
-            _starOriginalColors.Clear();
-            if (completedStarImages == null) return;
+        #endregion
 
-            foreach (var img in completedStarImages)
-                _starOriginalColors.Add(img != null ? img.color : Color.white);
-        }
+        #region Public Methods
 
+        /// <summary>1–3 stars from how much of <paramref name="timeLimit"/> was consumed (faster = more stars).</summary>
         public static int ComputeStarRating(float remainingTime, float timeLimit)
         {
             if (timeLimit <= 0.001f) return 3;
@@ -59,6 +70,7 @@ namespace UI
             return 1;
         }
 
+        /// <summary>Shows win or lose panel; on win, reveals <paramref name="starRating"/> filled stars with staggered tween.</summary>
         public void Initialize(bool isCompleted, int starRating = 0)
         {
             KillStarAnimation();
@@ -69,6 +81,25 @@ namespace UI
                 PlayStarReveal(starRating);
             else
                 ResetStarsVisual();
+        }
+
+        public override void Hide()
+        {
+            KillStarAnimation();
+            base.Hide();
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void CacheStarOriginalColors()
+        {
+            _starOriginalColors.Clear();
+            if (completedStarImages == null) return;
+
+            foreach (var img in completedStarImages)
+                _starOriginalColors.Add(img != null ? img.color : Color.white);
         }
 
         private void ApplyCompletedPanelsExclusive(bool showCompleted)
@@ -141,10 +172,6 @@ namespace UI
             }
         }
 
-        public override void Hide()
-        {
-            KillStarAnimation();
-            base.Hide();
-        }
+        #endregion
     }
 }

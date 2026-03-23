@@ -6,8 +6,11 @@ using Enums;
 
 namespace UI
 {
+    /// <summary>Single level entry on the start screen: label, lock/active/completed styling, selection highlight.</summary>
     public class LevelButtonView : MonoBehaviour
     {
+        #region SerializeField
+
         [SerializeField] private TMP_Text levelText;
         [SerializeField] private Button button;
         [SerializeField] private Image backgroundImage;
@@ -16,11 +19,32 @@ namespace UI
         [SerializeField] private Color activeColor = Color.white;
         [SerializeField] private Color selectedColor = Color.yellow;
 
+        #endregion
+
+        #region Public Fields
+
         public event Action<int> OnLevelSelected;
-        
+
+        #endregion
+
+        #region Private Fields
+
         private int _dataIndex;
         private LevelStatus _status;
         private bool _isSelected;
+
+        #endregion
+
+        #region Unity Lifecycle
+
+        private void Awake()
+        {
+            button.onClick.AddListener(() => OnLevelSelected?.Invoke(_dataIndex));
+        }
+
+        #endregion
+
+        #region Public Methods
 
         public void Setup(int displayNumber, int dataIndex, LevelStatus status)
         {
@@ -37,6 +61,10 @@ namespace UI
             _isSelected = selected;
             UpdateVisual();
         }
+
+        #endregion
+
+        #region Private Methods
 
         private void UpdateVisual()
         {
@@ -64,9 +92,6 @@ namespace UI
             }
         }
 
-        private void Awake()
-        {
-            button.onClick.AddListener(() => OnLevelSelected?.Invoke(_dataIndex));
-        }
+        #endregion
     }
 }

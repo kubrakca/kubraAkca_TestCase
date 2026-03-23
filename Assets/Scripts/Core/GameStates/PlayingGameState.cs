@@ -4,14 +4,25 @@ using Zenject;
 
 namespace Core.GameStates
 {
+    /// <summary>Active round: HUD timer, spawned level, input; handles pause, win (all stars matched), or time fail.</summary>
     public class PlayingGameState : GameState
     {
+        #region Dependency Injection
+
         [Inject] private ILevelService _levelService;
         [Inject] private LevelSpawner _levelSpawner;
         [Inject] private GameplayController _gameplayController;
 
+        #endregion
+
+        #region Private Fields
+
         private GameScreen _gameScreen;
         private SettingsScreen _settingsScreen;
+
+        #endregion
+
+        #region Public Methods
 
         public override void Enter()
         {
@@ -38,6 +49,35 @@ namespace Core.GameStates
 
             Debug.Log($"Playing Level {levelData.levelNumber}");
         }
+
+        public override void Exit()
+        {
+            if (_gameScreen != null)
+            {
+                _gameScreen.OnTimerExpired -= HandleTimerExpired;
+                _gameScreen.OnPauseClicked -= HandlePause;
+                _gameScreen.StopTimer();
+            }
+
+            if (_settingsScreen != null)
+            {
+                _settingsScreen.OnResumeClicked -= HandleResume;
+                _settingsScreen.OnHomeClicked -= HandleBackToHome;
+                UIService.Hide<SettingsScreen>();
+                _settingsScreen = null;
+            }
+
+            _gameplayController.OnAllStarsMatched -= HandleLevelCompleted;
+            _gameplayController.Deactivate();
+
+            _levelSpawner.ClearLevel();
+            UIService.Hide<GameScreen>();
+            base.Exit();
+        }
+
+        #endregion
+
+        #region Private Methods
 
         private void HandlePause()
         {
@@ -87,29 +127,6 @@ namespace Core.GameStates
             Context.ChangeState<EndGameState>();
         }
 
-        public override void Exit()
-        {
-            if (_gameScreen != null)
-            {
-                _gameScreen.OnTimerExpired -= HandleTimerExpired;
-                _gameScreen.OnPauseClicked -= HandlePause;
-                _gameScreen.StopTimer();
-            }
-
-            if (_settingsScreen != null)
-            {
-                _settingsScreen.OnResumeClicked -= HandleResume;
-                _settingsScreen.OnHomeClicked -= HandleBackToHome;
-                UIService.Hide<SettingsScreen>();
-                _settingsScreen = null;
-            }
-
-            _gameplayController.OnAllStarsMatched -= HandleLevelCompleted;
-            _gameplayController.Deactivate();
-
-            _levelSpawner.ClearLevel();
-            UIService.Hide<GameScreen>();
-            base.Exit();
-        }
+        #endregion
     }
 }
