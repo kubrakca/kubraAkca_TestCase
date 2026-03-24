@@ -15,8 +15,12 @@ public class LevelButtonView : MonoBehaviour
     [SerializeField] private Color lockedColor = new Color(0.3f, 0.3f, 0.3f);
     [SerializeField] private Color activeColor = Color.white;
     [SerializeField] private Color selectedColor = Color.yellow;
-    [SerializeField] private float selectedSize;
-    [SerializeField] private float notSelectedSize;
+    [Tooltip("Scale when this level is the highlighted choice (tap selection).")]
+    [SerializeField] private float selectionHighlightScale = 1.3f;
+    [Tooltip("Scale for the current playable level when it is not the highlighted choice.")]
+    [SerializeField] private float activeIdleScale = 1.1f;
+    [Tooltip("Scale for locked and completed levels (idle).")]
+    [SerializeField] private float notSelectedSize = 0.8f;
 
     #endregion
 
@@ -70,7 +74,7 @@ public class LevelButtonView : MonoBehaviour
         if (_isSelected && _status != LevelStatus.Locked)
         {
             backgroundImage.color = selectedColor;
-            transform.localScale = Vector3.one * 1.3f;
+            transform.localScale = Vector3.one * selectionHighlightScale;
             return;
         }
 
@@ -82,7 +86,7 @@ public class LevelButtonView : MonoBehaviour
                 break;
             case LevelStatus.Active:
                 backgroundImage.color = activeColor;
-                transform.localScale = Vector3.one * selectedSize;
+                transform.localScale = Vector3.one * activeIdleScale;
                 break;
             case LevelStatus.Completed:
                 backgroundImage.color = activeColor;

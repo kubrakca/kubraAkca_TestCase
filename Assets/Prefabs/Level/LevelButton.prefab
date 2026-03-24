@@ -230,7 +230,8 @@ MonoBehaviour:
   lockedColor: {r: 0.5529412, g: 0.5764706, b: 0.24313726, a: 1}
   activeColor: {r: 1, g: 1, b: 1, a: 1}
   selectedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  selectedSize: 3
+  selectionHighlightScale: 1.3
+  activeIdleScale: 1.1
   notSelectedSize: 0.8
 --- !u!114 &7610010730157525165
 MonoBehaviour:
